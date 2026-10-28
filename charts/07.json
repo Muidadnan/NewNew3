@@ -1,0 +1,169 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Eight state/territory observations: population size vs combined Woolworths and Coles locations. The dashed line indicates the national average density, not a regression.",
+  "background": null,
+  "width": "container",
+  "height": 275,
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "DM Sans",
+    "axis": {
+      "labelFont": "DM Sans",
+      "titleFont": "DM Sans",
+      "labelColor": "#45615c",
+      "titleColor": "#183d3c",
+      "gridColor": "#e3eae5",
+      "domain": false
+    },
+    "legend": {
+      "orient": "bottom",
+      "labelFont": "DM Sans"
+    }
+  },
+  "data": {
+    "url": "data/states.csv"
+  },
+  "transform": [
+    {
+      "calculate": "datum.population/1000000",
+      "as": "popM"
+    },
+    {
+      "calculate": "datum.per100k>=7.236 ? \"Above national rate\" : \"Below national rate\"",
+      "as": "benchmark"
+    },
+    {
+      "calculate": "datum.popM*7.236*10",
+      "as": "nationalExpected"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {
+        "type": "line",
+        "strokeDash": [
+          5,
+          5
+        ],
+        "strokeWidth": 2,
+        "color": "#b2c4b9"
+      },
+      "encoding": {
+        "x": {
+          "field": "popM",
+          "type": "quantitative",
+          "title": "Population (millions)",
+          "scale": {
+            "zero": true
+          }
+        },
+        "y": {
+          "field": "nationalExpected",
+          "type": "quantitative",
+          "title": "Coles + Woolworths stores",
+          "scale": {
+            "zero": true
+          }
+        },
+        "order": {
+          "field": "popM",
+          "type": "quantitative",
+          "sort": "ascending"
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "circle",
+        "stroke": "#fffdfa",
+        "strokeWidth": 2,
+        "opacity": 0.92
+      },
+      "encoding": {
+        "x": {
+          "field": "popM",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "total",
+          "type": "quantitative"
+        },
+        "size": {
+          "field": "total",
+          "type": "quantitative",
+          "scale": {
+            "range": [
+              70,
+              700
+            ]
+          },
+          "legend": null
+        },
+        "color": {
+          "field": "benchmark",
+          "type": "nominal",
+          "scale": {
+            "domain": [
+              "Above national rate",
+              "Below national rate"
+            ],
+            "range": [
+              "#12756c",
+              "#d45039"
+            ]
+          },
+          "legend": {
+            "title": null
+          }
+        },
+        "tooltip": [
+          {
+            "field": "state",
+            "type": "nominal"
+          },
+          {
+            "field": "population",
+            "type": "quantitative",
+            "format": ","
+          },
+          {
+            "field": "total",
+            "type": "quantitative",
+            "title": "Stores"
+          },
+          {
+            "field": "per100k",
+            "type": "quantitative",
+            "format": ".2f",
+            "title": "Stores / 100k"
+          }
+        ]
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "dy": -13,
+        "fontSize": 11,
+        "fontWeight": 700,
+        "color": "#1d3c41"
+      },
+      "encoding": {
+        "x": {
+          "field": "popM",
+          "type": "quantitative"
+        },
+        "y": {
+          "field": "total",
+          "type": "quantitative"
+        },
+        "text": {
+          "field": "code",
+          "type": "nominal"
+        }
+      }
+    }
+  ]
+}

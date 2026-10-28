@@ -1,0 +1,163 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Parallel coordinates over four independently normalised state indicators. Click a state in the legend to highlight its profile; zero and one are dimension-specific minimum/maximum among eight states, not shared physical units.",
+  "background": null,
+  "width": "container",
+  "height": 245,
+  "config": {
+    "view": {
+      "stroke": null
+    },
+    "font": "DM Sans",
+    "axis": {
+      "labelFont": "DM Sans",
+      "titleFont": "DM Sans",
+      "labelColor": "#45615c",
+      "titleColor": "#173d40",
+      "gridColor": "#e3eae5",
+      "domain": false
+    },
+    "legend": {
+      "orient": "bottom",
+      "labelFont": "DM Sans",
+      "labelFontSize": 10
+    }
+  },
+  "data": {
+    "url": "data/state_parallel.csv"
+  },
+  "mark": {
+    "type": "line",
+    "point": {
+      "filled": true,
+      "size": 90
+    },
+    "strokeWidth": 3
+  },
+  "encoding": {
+    "x": {
+      "field": "dimension",
+      "type": "ordinal",
+      "sort": [
+        "Population",
+        "Woolworths",
+        "Coles",
+        "Outlets per 100k"
+      ],
+      "title": null,
+      "axis": {
+        "labelAngle": 0,
+        "labelLimit": 155
+      }
+    },
+    "y": {
+      "field": "normalised",
+      "type": "quantitative",
+      "scale": {
+        "domain": [
+          0,
+          1
+        ]
+      },
+      "axis": {
+        "values": [
+          0,
+          0.5,
+          1
+        ],
+        "title": "Within-measure range (min → max)",
+        "labelExpr": "datum.value==0 ? \"Lowest\" : datum.value==1 ? \"Highest\" : \"Mid\""
+      }
+    },
+    "color": {
+      "field": "code",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "NSW",
+          "VIC",
+          "QLD",
+          "WA",
+          "SA",
+          "TAS",
+          "ACT",
+          "NT"
+        ],
+        "range": [
+          "#d45039",
+          "#12756c",
+          "#e0a92f",
+          "#175786",
+          "#934886",
+          "#6e9e75",
+          "#ab614e",
+          "#687995"
+        ]
+      },
+      "legend": {
+        "title": "Click a state to highlight",
+        "columns": 4
+      }
+    },
+    "detail": {
+      "field": "code",
+      "type": "nominal"
+    },
+    "order": {
+      "field": "order",
+      "type": "quantitative"
+    },
+    "opacity": {
+      "condition": {
+        "param": "selectedState",
+        "value": 1
+      },
+      "value": 0.12
+    },
+    "tooltip": [
+      {
+        "field": "state",
+        "type": "nominal",
+        "title": "State"
+      },
+      {
+        "field": "dimension",
+        "type": "nominal",
+        "title": "Measure"
+      },
+      {
+        "field": "value",
+        "type": "quantitative",
+        "format": ".2f",
+        "title": "Observed value"
+      },
+      {
+        "field": "unit",
+        "type": "nominal",
+        "title": "Unit"
+      },
+      {
+        "field": "min",
+        "type": "quantitative",
+        "title": "Lowest state value"
+      },
+      {
+        "field": "max",
+        "type": "quantitative",
+        "title": "Highest state value"
+      }
+    ]
+  },
+  "params": [
+    {
+      "name": "selectedState",
+      "select": {
+        "type": "point",
+        "fields": [
+          "code"
+        ]
+      },
+      "bind": "legend"
+    }
+  ]
+}
